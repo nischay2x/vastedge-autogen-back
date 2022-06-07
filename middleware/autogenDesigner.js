@@ -29,7 +29,7 @@ export function verifyGetColumnDetails (req, res, next) {
     const { error, value } = Joi.object().keys({
         limit: Joi.number(),
         offset: Joi.number(),
-        fields: Joi.array().items(Joi.string().regex(/^(_|\d|\w|\s)*$/)),
+        fields: Joi.alternatives().try(Joi.array().items(Joi.string().regex(/^(_|\d|\w|\s)*$/)), Joi.string().regex(/^(_|\d|\w|\s)*$/)),
         sortBy: Joi.string().regex(/^(_|\d|\w|\s)*$/)
     }).validate(req.query);
     

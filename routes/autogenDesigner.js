@@ -1,6 +1,6 @@
 import express from "express";
-import { deleteColumnDetailById, editColumDetailById, getColumnDetails, insertColumnDetail } from "../controllers/master.js";
-import { verifyDeleteColumnDetail, verifyEditColumnDetail, verifyGetColumnDetails, verifyInsertColumnDetail } from "../middleware/master.js";
+import { deleteColumnDetailById, editColumDetailById, getColumnDetails, insertColumnDetail } from "../controllers/autogenDesigner.js";
+import { verifyDeleteColumnDetail, verifyEditColumnDetail, verifyGetColumnDetails, verifyInsertColumnDetail } from "../middleware/autogenDesigner.js";
 const router = express.Router();
 
 router.post("/column", verifyInsertColumnDetail, insertColumnDetail);

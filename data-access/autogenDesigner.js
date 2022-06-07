@@ -1,5 +1,5 @@
 import query, { DbQuery } from "./dbConnect.js";
-const queryMaster = new DbQuery('master');
+const queryMaster = new DbQuery('AutogenDesigner');
 
 export async function insertColumnDetail (req, res) {
     try {
