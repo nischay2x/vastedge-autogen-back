@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteColumnDetailById, editColumDetailById, getColumnDetails, insertColumnDetail } from "../controllers/autogenDesigner.js";
+import { deleteColumnDetailById, editColumDetailById, getColumnDetails, insertColumnDetail } from "../data-access/autogenDesigner.js";
 import { verifyDeleteColumnDetail, verifyEditColumnDetail, verifyGetColumnDetails, verifyInsertColumnDetail } from "../middleware/autogenDesigner.js";
 const router = express.Router();
 
