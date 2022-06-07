@@ -1,7 +1,7 @@
 import express from "express";
 const app = express();
 
-import masterRoute from "./routes/master.js";
+import masterRoute from "./routes/autogenDesigner.js";
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
