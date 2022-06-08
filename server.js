@@ -1,9 +1,9 @@
-import express from "express";
+const express = require("express");
 const app = express();
+require('dotenv').config();
 
-
-import designerRoute from "./routes/autogenDesigner.js";
-import crudRoute from "./routes/autogenCrud.js";
+const designerRoute = require("./routes/autogenDesigner.js");
+const crudRoute = require("./routes/autogenCrud.js");
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

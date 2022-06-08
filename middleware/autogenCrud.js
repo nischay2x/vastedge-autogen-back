@@ -1,10 +1,10 @@
-import Joi from "joi";
+const Joi = require('joi');
 
 const validSqlDataTypes = ['STRING', 'NUMBER', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'FILE', 'IMAGE', 'DECIMAL', 'MONEY'];
 const requiredStringWithoutWhitespace = Joi.string().required().regex(/^(_|\d|\w)+$/);
 const autogenCrudColumnNames = ['id', 'tableName', 'columnName', 'dataType', 'nullConstrain'];
 
-export function verifyInsertColumn (req, res, next) {
+function verifyInsertColumn (req, res, next) {
     const { error, value } = Joi.object().keys({
         tableName: requiredStringWithoutWhitespace,
         columnName: requiredStringWithoutWhitespace,
@@ -19,7 +19,7 @@ export function verifyInsertColumn (req, res, next) {
     next();
 }
 
-export function verifyEditColumn (req, res, next) {
+function verifyEditColumn (req, res, next) {
     if(!req.params.id) return res.status(405).json({
         error: "Id is required"
     });
@@ -38,7 +38,7 @@ export function verifyEditColumn (req, res, next) {
     next();
 }
 
-export function verifyGetColumns (req, res, next) {
+function verifyGetColumns (req, res, next) {
     if(req.query.fields){
         req.query.fields = req.query.fields.split(",")
     }
@@ -55,7 +55,7 @@ export function verifyGetColumns (req, res, next) {
     next();
 }
 
-export function verifyDeleteColumn (req, res, next) {
+function verifyDeleteColumn (req, res, next) {
     if(!req.params.id) return res.status(405).json({
         error: "Id is required"
     });
@@ -71,4 +71,8 @@ function getSQLDataType (type, length) {
         case 'FILE': return 'VARBINARY(MAX)';
         default: return type;
     }
+}
+
+module.exports = {
+    verifyInsertColumn, verifyEditColumn, verifyGetColumns, verifyDeleteColumn
 }

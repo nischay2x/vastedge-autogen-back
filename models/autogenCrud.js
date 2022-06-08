@@ -1,4 +1,4 @@
-export default class AutogenCrud {
+class AutogenCrud {
     constructor(obj) {
         this.id = obj.id;
         this.tableName = obj.tableName;
@@ -7,3 +7,5 @@ export default class AutogenCrud {
         this.nullConstrain = obj.nullConstrain;
     }
 }
+
+module.exports = AutogenCrud;

@@ -1,13 +1,13 @@
-import express from "express";
-import { 
+const express = require("express");
+const { 
     deleteColumnDetailById, editColumDetailById, getColumnDetails, 
     getColumnDetailsByTableNameAndPageName, insertColumnDetail,
     getDistinctPages, getTablesByPageName 
-} from "../data-access/autogenDesigner.js";
-import { 
+} = require("../data-access/autogenDesigner.js");
+const { 
     verifyDeleteColumnDetail, verifyEditColumnDetail, verifyGetColumnDetails, 
     verifyGetColumnDetailsByTableName, verifyInsertColumnDetail 
-} from "../middleware/autogenDesigner.js";
+} = require("../middleware/autogenDesigner.js");
 const router = express.Router();
 
 router.post("/column", verifyInsertColumnDetail, insertColumnDetail);
@@ -25,4 +25,4 @@ router.get("/columns/:pageName/:tableName", getColumnDetailsByTableNameAndPageNa
 
 router.get("/table/:tableName", verifyGetColumnDetailsByTableName, getColumnDetailsByTableNameAndPageName);
 
-export default router;
+module.exports = router;

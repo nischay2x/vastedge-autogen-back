@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require('joi');
 
 // inForm - true - designer & crud
 // inForm - false - crud only
@@ -11,7 +11,7 @@ const autogenDesignerColumnNames = ['id', 'tableName', 'columnName', 'pageName',
 const validSqlDataTypes = ['STRING', 'NUMBER', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'FILE', 'IMAGE', 'DECIMAL', 'MONEY'];
 
 
-export function verifyInsertColumnDetail (req, res, next) {
+function verifyInsertColumnDetail (req, res, next) {
     let { error, value } = Joi.object().keys({
         pageName: requiredStringWithoutWhitespace,
         tableName: requiredStringWithoutWhitespace,
@@ -40,7 +40,7 @@ export function verifyInsertColumnDetail (req, res, next) {
     next();
 }
 
-export function verifyGetColumnDetails (req, res, next) {
+function verifyGetColumnDetails (req, res, next) {
     if(req.query.fields){
         req.query.fields = req.query.fields.split(",")
     }
@@ -57,7 +57,7 @@ export function verifyGetColumnDetails (req, res, next) {
     next();
 }
 
-export function verifyEditColumnDetail (req, res, next) {
+function verifyEditColumnDetail (req, res, next) {
     if(!req.params.id) return res.status(405).json({
         error: "Id is required"
     });
@@ -95,14 +95,14 @@ export function verifyEditColumnDetail (req, res, next) {
     next();
 }
 
-export function verifyDeleteColumnDetail (req, res, next) {
+function verifyDeleteColumnDetail (req, res, next) {
     if(!req.params.id) return res.status(405).json({
         error: "Id is required"
     });
     next();
 }
 
-export function verifyGetColumnDetailsByTableName (req, res, next) {
+function verifyGetColumnDetailsByTableName (req, res, next) {
     const { error, value } = Joi.object().keys({
         tableName: requiredStringWithoutWhitespace
     }).validate(req.params);
@@ -121,4 +121,8 @@ function getSQLDataType (type, length) {
         case 'FILE': return 'VARBINARY(MAX)';
         default: return type;
     }
+}
+
+module.exports = {
+    verifyInsertColumnDetail, verifyGetColumnDetails, verifyEditColumnDetail, verifyDeleteColumnDetail, verifyGetColumnDetailsByTableName
 }

@@ -1,9 +1,9 @@
-import mssql from "mssql";
+const mssql = require("mssql");
 // import { sqlConfig } from "../keys.js";
-import dotenv from "dotenv";
-dotenv.config();
+// import dotenv from "dotenv";
+// dotenv.config();
 
-export class DbQuery {
+class DbQuery {
     query = '';
     tableName = '';
 
@@ -97,6 +97,8 @@ const sqlConfig = {
     }
 }
 
-export default async (text, params) => mssql.connect(sqlConfig).then((pool) => {
+const query = async (text, params) => mssql.connect(sqlConfig).then((pool) => {
     return pool.query(text)
 })
+
+module.exports = { DbQuery, query };

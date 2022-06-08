@@ -1,19 +1,19 @@
-import express from "express";
+const express = require('express');
 const router = express.Router();
 
-import { 
+const { 
     verifyInsertColumn, verifyGetColumns,
     verifyEditColumn, verifyDeleteColumn
-} from "../middleware/autogenCrud.js";
+} = require("../middleware/autogenCrud.js");
 
-import {
+const {
     insertColumn, editColumById, 
     getColumns, deleteColumnById
-} from "../data-access/autogenCrud.js";
+} = require("../data-access/autogenCrud.js");
 
 router.post("/column", verifyInsertColumn, insertColumn);
 router.get("/columns", verifyGetColumns, getColumns);
 router.patch("/column/:id", verifyEditColumn, editColumById);
 router.delete("/column/:id", verifyDeleteColumn, deleteColumnById);
 
-export default router;
+module.exports = router;

@@ -1,7 +1,9 @@
-import query, { DbQuery } from "./dbConnect.js";
+const dbConnect = require("./dbConnect.js");
+const query = dbConnect.query;
+const DbQuery = dbConnect.DbQuery;
 const queryCrud = new DbQuery('AutogenCrud');
 
-export async function insertColumn (req, res) {
+async function insertColumn (req, res) {
     try {
         let insertableData = req.body;
         delete insertableData.dataLength;
@@ -20,7 +22,7 @@ export async function insertColumn (req, res) {
     }
 }
 
-export async function getColumns (req, res) {
+async function getColumns (req, res) {
     try {
         const { limit = 10, offset = 0, fields = [], sortBy = 'id' } = req.query;
         const extractQuery = queryCrud.select(fields).sort(sortBy).offset(offset).limit(limit).getQuery();
@@ -35,7 +37,7 @@ export async function getColumns (req, res) {
     }
 }
 
-export async function getColumnsByTableName (req, res) {
+async function getColumnsByTableName (req, res) {
     try {
         const { tableName } = req.params;
         const extractQuery = queryCrud.select([]).where('tableName', '=', tableName).getQuery();
@@ -51,7 +53,7 @@ export async function getColumnsByTableName (req, res) {
     }
 }
 
-export async function editColumById (req, res) {
+async function editColumById (req, res) {
     try {
         const { id } = req.params;
         let editableData = req.body;
@@ -70,7 +72,7 @@ export async function editColumById (req, res) {
     }
 }
 
-export async function deleteColumnById (req, res) {
+async function deleteColumnById (req, res) {
     try {
         const { id } = req.params;
         const deleteQuery = queryCrud.delete().where('id', '=', id).getQuery();
@@ -83,4 +85,8 @@ export async function deleteColumnById (req, res) {
         console.log(error);
         return res.status(500).json({error});
     }
+}
+
+module.exports = {
+    insertColumn, getColumns, getColumnsByTableName, editColumById, deleteColumnById
 }

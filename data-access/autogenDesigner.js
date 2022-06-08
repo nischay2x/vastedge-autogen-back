@@ -1,8 +1,10 @@
-import query, { DbQuery } from "./dbConnect.js";
+const dbConnect = require("./dbConnect.js");
+const DbQuery = dbConnect.DbQuery;
+const query = dbConnect.query;
 const queryDesigner = new DbQuery('AutogenDesigner');
 const queryCrud = new DbQuery('AutogenCrud');
 
-export async function insertColumnDetail (req, res) {
+async function insertColumnDetail (req, res) {
     try {
         const { keepInForm } = req.body;
 
@@ -31,7 +33,7 @@ export async function insertColumnDetail (req, res) {
     }
 }
 
-export async function getColumnDetails (req, res) {
+async function getColumnDetails (req, res) {
     try {
         const { limit = 10, offset = 0, fields = [], sortBy = 'id' } = req.query;
         const extractQuery = queryDesigner.select(fields).sort(sortBy).offset(offset).limit(limit).getQuery();
@@ -46,7 +48,7 @@ export async function getColumnDetails (req, res) {
     }
 }
 
-export async function getColumnDetailsByTableNameAndPageName (req, res) {
+async function getColumnDetailsByTableNameAndPageName (req, res) {
     try {
         const { tableName, pageName } = req.params;
         const extractQuery = queryDesigner.select([]).andWhere([['tableName', '=', tableName], ['pageName', '=', pageName]]).getQuery();
@@ -62,7 +64,7 @@ export async function getColumnDetailsByTableNameAndPageName (req, res) {
     }
 }
 
-export async function getDistinctPages (req, res) {
+async function getDistinctPages (req, res) {
     try {
         const extractQuery = queryDesigner.distinct(['pageName']).getQuery();
         const { recordset } = await query(extractQuery);
@@ -76,7 +78,7 @@ export async function getDistinctPages (req, res) {
     }
 }
 
-export async function getTablesByPageName (req, res) {
+async function getTablesByPageName (req, res) {
     try {
         const { pageName } = req.params;
         const extractQuery = queryDesigner.distinct(['tableName']).where('pageName', '=', pageName).getQuery();
@@ -93,7 +95,7 @@ export async function getTablesByPageName (req, res) {
     }
 }
 
-export async function editColumDetailById (req, res) {
+async function editColumDetailById (req, res) {
     try {
         const { id } = req.params;
         const updateQuery = queryDesigner.set(req.design).where('id', '=', id).getQuery();
@@ -108,7 +110,7 @@ export async function editColumDetailById (req, res) {
     }
 }
 
-export async function deleteColumnDetailById (req, res) {
+async function deleteColumnDetailById (req, res) {
     try {
         const { id } = req.params;
         const deleteQuery = queryDesigner.delete().where('id', '=', id).getQuery();
@@ -123,5 +125,8 @@ export async function deleteColumnDetailById (req, res) {
     }
 }
 
-
+module.exports = {
+    insertColumnDetail, getColumnDetails, getColumnDetailsByTableNameAndPageName, getDistinctPages,
+    getTablesByPageName, editColumDetailById, deleteColumnDetailById
+}
 

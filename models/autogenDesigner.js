@@ -1,4 +1,4 @@
-export default class AutogenDesigner {
+class AutogenDesigner {
     constructor(obj) {
         this.id = obj.id;
         this.tableName = obj.tableName;
@@ -9,3 +9,4 @@ export default class AutogenDesigner {
         this.fieldType = obj.fieldType
     }
 }
+module.exports = AutogenDesigner;
