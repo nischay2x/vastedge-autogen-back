@@ -44,7 +44,16 @@ export class DbQuery {
     }
 
     where (field, comparison, value) {
-        this.query = `${this.query} WHERE ${field} ${comparison} ${value}`
+        this.query = `${this.query} WHERE ${field} ${comparison} '${value}'`
+        return this;
+    }
+
+    andWhere (outer = []) {
+        let singleCompares = [];
+        outer.forEach(i => {
+            singleCompares.push(`${i[0]} ${i[1]} ${i[2]}`)
+        });
+        this.query = `${this.query} WHERE ${singleCompares.join(" AND ")}`;
         return this;
     }
 
@@ -65,6 +74,11 @@ export class DbQuery {
         });
         this.query = `UPDATE ${this.tableName} SET ${setArray.join(", ")}`
         return this; 
+    }
+
+    distinct (fields) {
+        this.query = `SELECT DISTINCT ${fields.join(", ")} FROM ${this.tableName}`;
+        return this;
     }
 }
 

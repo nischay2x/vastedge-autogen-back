@@ -4,8 +4,8 @@ export default class AutogenDesigner {
         this.tableName = obj.tableName;
         this.columnName = obj.columnName;
         this.pageName = obj.pageName;
-        this.dataType = obj.dataType;
         this.applyFilter = obj.applyFilter;
         this.label = obj.label;
+        this.fieldType = obj.fieldType
     }
 }
