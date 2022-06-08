@@ -1,5 +1,7 @@
 import mssql from "mssql";
-import { sqlConfig } from "../keys.js";
+// import { sqlConfig } from "../keys.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export class DbQuery {
     query = '';
@@ -79,6 +81,19 @@ export class DbQuery {
     distinct (fields) {
         this.query = `SELECT DISTINCT ${fields.join(", ")} FROM ${this.tableName}`;
         return this;
+    }
+}
+
+const sqlConfig = {
+    server: process.env.SERVER,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
+    options: {
+        trustedConnection: true,
+        encrypt: true,
+        enableArithAbort: true,
+        trustServerCertificate: true,
     }
 }
 
