@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
 require('dotenv').config();
+const cors = require('cors');
+
 
 const designerRoute = require("./routes/autogenDesigner.js");
 const crudRoute = require("./routes/autogenCrud.js");
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
