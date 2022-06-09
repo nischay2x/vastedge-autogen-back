@@ -89,9 +89,13 @@ async function deleteColumnById (req, res) {
 
 async function getJoinedColumns (req, res) {
     try {
-        const extractQuery = `SELECT ad.id AS designerId, ad.pageName, ad.tableName, ad.columnName, ad.applyFilter, ad.label, ad.fieldType,
+        const { tableName } = req.query;
+        let extractQuery = `SELECT ad.id AS designerId, ad.pageName, ad.tableName, ad.columnName, ad.applyFilter, ad.label, ad.fieldType,
         ac.id AS crudId, ac.dataType, ac.nullConstrain
-        FROM AutogenDesigner AS ad RIGHT JOIN AutogenCrud AS ac ON (ad.columnName = ac.columnName AND ad.tableName = ac.tableName);`
+        FROM AutogenDesigner AS ad RIGHT JOIN AutogenCrud AS ac ON (ad.columnName = ac.columnName AND ad.tableName = ac.tableName)`
+        const tableConstrain = ` WHERE ad.tableName = '${tableName}'`;
+
+        if(tableName) extractQuery = extractQuery+tableConstrain;
 
         const { recordset } = await query(extractQuery);
         return res.status(200).json({
