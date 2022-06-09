@@ -2,6 +2,7 @@ const Joi = require('joi');
 
 const validSqlDataTypes = ['STRING', 'NUMBER', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'FILE', 'IMAGE', 'DECIMAL', 'MONEY'];
 const requiredStringWithoutWhitespace = Joi.string().required().regex(/^(_|\d|\w)+$/);
+const stringWithoutWhitespace = Joi.string().regex(/^(_|\d|\w)+$/);
 const autogenCrudColumnNames = ['id', 'tableName', 'columnName', 'dataType', 'nullConstrain'];
 
 function verifyInsertColumn (req, res, next) {
@@ -25,11 +26,11 @@ function verifyEditColumn (req, res, next) {
     });
      
     const { error, value } = Joi.object().keys({
-        tableName: requiredStringWithoutWhitespace,
-        columnName: requiredStringWithoutWhitespace,
+        tableName: stringWithoutWhitespace,
+        columnName: stringWithoutWhitespace,
         nullConstrain: Joi.number().valid(0, 1),
-        dataType: Joi.string().required().valid(...validSqlDataTypes),
-        dataLength: Joi.number().min(0).default(0)
+        dataType: Joi.string().valid(...validSqlDataTypes),
+        dataLength: Joi.number().min(0)
     }).validate(req.body);
 
     if(error) return res.status(405).json(error);

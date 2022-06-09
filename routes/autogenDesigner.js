@@ -1,8 +1,8 @@
 const express = require("express");
 const { 
     deleteColumnDetailById, editColumDetailById, getColumnDetails, 
-    getColumnDetailsByTableNameAndPageName, insertColumnDetail,
-    getDistinctPages, getTablesByPageName 
+    getColumnDetailsByTableName, insertColumnDetail,
+    getDistinctPages, getTablesByPageName, getDistinctTables 
 } = require("../data-access/autogenDesigner.js");
 const { 
     verifyDeleteColumnDetail, verifyEditColumnDetail, verifyGetColumnDetails, 
@@ -17,12 +17,13 @@ router.delete("/column/:id", verifyDeleteColumnDetail, deleteColumnDetailById);
 
 // get distinct pages
 router.get("/pages", getDistinctPages);
+router.get("/tables", getDistinctTables);
 router.get("/tables/:pageName", getTablesByPageName);
-router.get("/columns/:pageName/:tableName", getColumnDetailsByTableNameAndPageName);
+router.get("/columns/:tableName", getColumnDetailsByTableName);
 // get distinct tables by pageName
 // get distinct columns by tableName
 // get columns by tableName and pageName
 
-router.get("/table/:tableName", verifyGetColumnDetailsByTableName, getColumnDetailsByTableNameAndPageName);
+// router.get("/table/:tableName", verifyGetColumnDetailsByTableName, getColumnDetailsByTableName);
 
 module.exports = router;

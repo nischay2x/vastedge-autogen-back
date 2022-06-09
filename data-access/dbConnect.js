@@ -53,7 +53,7 @@ class DbQuery {
     andWhere (outer = []) {
         let singleCompares = [];
         outer.forEach(i => {
-            singleCompares.push(`${i[0]} ${i[1]} ${i[2]}`)
+            singleCompares.push(`${i[0]} ${i[1]} '${i[2]}'`)
         });
         this.query = `${this.query} WHERE ${singleCompares.join(" AND ")}`;
         return this;

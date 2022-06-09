@@ -8,10 +8,12 @@ const {
 
 const {
     insertColumn, editColumById, 
-    getColumns, deleteColumnById
+    getColumns, deleteColumnById,
+    getJoinedColumns
 } = require("../data-access/autogenCrud.js");
 
-router.post("/column", verifyInsertColumn, insertColumn);
+// router.post("/column", verifyInsertColumn, insertColumn);
+router.get("/columns/combined", getJoinedColumns);
 router.get("/columns", verifyGetColumns, getColumns);
 router.patch("/column/:id", verifyEditColumn, editColumById);
 router.delete("/column/:id", verifyDeleteColumn, deleteColumnById);

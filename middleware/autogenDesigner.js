@@ -68,28 +68,10 @@ function verifyEditColumnDetail (req, res, next) {
         columnName: stringWithoutWhitespace,
         applyFilter: Joi.number().valid(1, 0),
         label: Joi.string().regex(/^(_|\d|\w|\s)+$/),
-        fieldType: Joi.string().valid(...validInputFieldTypes),
-        nullConstrain: Joi.number().valid(0, 1),
-        dataType: Joi.string().valid(...validSqlDataTypes),
-        dataLength: Joi.number().min(1)
+        fieldType: Joi.string().valid(...validInputFieldTypes)
     }).validate(req.body);
 
     if(error) return res.status(405).json(error);
-    if(value.dataType){
-        value.dataType = getSQLDataType(value.dataType, value.dataLength);
-    }
-
-    delete value.dataType;
-    req.design = {};
-    req.crud = {};
-
-    Object.keys(value).forEach(k => {
-        if(autogenDesignerColumnNames.includes(k)){
-            req.design[k] = value[k];
-        } else {
-            req.crud[k] = value[k];
-        }
-    })
 
     req.body = value;
     next();

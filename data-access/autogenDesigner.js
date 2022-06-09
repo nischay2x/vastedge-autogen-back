@@ -28,6 +28,12 @@ async function insertColumnDetail (req, res) {
             msg: "Data Inserted"
         });
     } catch (error) {
+        if(error.number === 2627) {
+            return res.status(500).json({
+                status: false,
+                msg: "Duplicate Column Name for same Table"
+            })
+        }
         console.log(error);
         return res.status(500).json(error);
     }
@@ -48,10 +54,11 @@ async function getColumnDetails (req, res) {
     }
 }
 
-async function getColumnDetailsByTableNameAndPageName (req, res) {
+async function getColumnDetailsByTableName (req, res) {
     try {
-        const { tableName, pageName } = req.params;
-        const extractQuery = queryDesigner.select([]).andWhere([['tableName', '=', tableName], ['pageName', '=', pageName]]).getQuery();
+        const { tableName } = req.params;
+        const extractQuery = queryDesigner.select([]).where('tableName', '=', tableName).getQuery();
+        console.log(extractQuery);
         const { recordset } = await query(extractQuery);
 
         return res.status(200).json({
@@ -95,6 +102,20 @@ async function getTablesByPageName (req, res) {
     }
 }
 
+async function getDistinctTables (req, res) {
+    try {
+        const extractQuery = queryDesigner.distinct(['tableName']).getQuery();
+        const { recordset } = await query(extractQuery);
+        return res.status(200).json({
+            status: true,
+            data: recordset.map(r => r.tableName)
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error})
+    }
+}
+
 async function editColumDetailById (req, res) {
     try {
         const { id } = req.params;
@@ -126,7 +147,7 @@ async function deleteColumnDetailById (req, res) {
 }
 
 module.exports = {
-    insertColumnDetail, getColumnDetails, getColumnDetailsByTableNameAndPageName, getDistinctPages,
-    getTablesByPageName, editColumDetailById, deleteColumnDetailById
+    insertColumnDetail, getColumnDetails, getColumnDetailsByTableName, getDistinctPages,
+    getTablesByPageName, editColumDetailById, deleteColumnDetailById, getDistinctTables
 }
 

@@ -61,7 +61,7 @@ async function editColumById (req, res) {
 
         const updateQuery = queryCrud.set(editableData).where('id', '=', id).getQuery();
 
-        //const response = await query(updateQuery);
+        const response = await query(updateQuery);
         return res.status(200).json({
             status: true,
             msg: "Data Updated"
@@ -87,6 +87,23 @@ async function deleteColumnById (req, res) {
     }
 }
 
+async function getJoinedColumns (req, res) {
+    try {
+        const extractQuery = `SELECT ad.id AS designerId, ad.pageName, ad.tableName, ad.columnName, ad.applyFilter, ad.label, ad.fieldType,
+        ac.id AS crudId, ac.dataType, ac.nullConstrain
+        FROM AutogenDesigner AS ad RIGHT JOIN AutogenCrud AS ac ON (ad.columnName = ac.columnName AND ad.tableName = ac.tableName);`
+
+        const { recordset } = await query(extractQuery);
+        return res.status(200).json({
+            status: true,
+            data: recordset
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error)   
+    }
+}
+
 module.exports = {
-    insertColumn, getColumns, getColumnsByTableName, editColumById, deleteColumnById
+    insertColumn, getColumns, getColumnsByTableName, editColumById, deleteColumnById, getJoinedColumns
 }
