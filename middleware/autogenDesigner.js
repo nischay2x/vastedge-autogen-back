@@ -84,6 +84,16 @@ function verifyDeleteColumnDetail (req, res, next) {
     next();
 }
 
+function verifyGetTablesByPageName (req, res, next) {
+    const { error, value } = Joi.object().keys({
+        pageName: requiredStringWithoutWhitespace
+    }).validate(req.params);
+
+    if(error) return res.status(405).json(error);
+    req.params = value;
+    next();
+}
+
 function verifyGetColumnDetailsByTableName (req, res, next) {
     const { error, value } = Joi.object().keys({
         tableName: requiredStringWithoutWhitespace
@@ -93,6 +103,7 @@ function verifyGetColumnDetailsByTableName (req, res, next) {
     req.params = value;
     next();
 }
+
 
 // utilities
 function getSQLDataType (type, length) {
@@ -106,5 +117,6 @@ function getSQLDataType (type, length) {
 }
 
 module.exports = {
-    verifyInsertColumnDetail, verifyGetColumnDetails, verifyEditColumnDetail, verifyDeleteColumnDetail, verifyGetColumnDetailsByTableName
+    verifyInsertColumnDetail, verifyGetColumnDetails, verifyEditColumnDetail, 
+    verifyDeleteColumnDetail, verifyGetColumnDetailsByTableName, verifyGetTablesByPageName
 }

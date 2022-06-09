@@ -58,7 +58,6 @@ async function getColumnDetailsByTableName (req, res) {
     try {
         const { tableName } = req.params;
         const extractQuery = queryDesigner.select([]).where('tableName', '=', tableName).getQuery();
-        console.log(extractQuery);
         const { recordset } = await query(extractQuery);
 
         return res.status(200).json({
@@ -89,7 +88,6 @@ async function getTablesByPageName (req, res) {
     try {
         const { pageName } = req.params;
         const extractQuery = queryDesigner.distinct(['tableName']).where('pageName', '=', pageName).getQuery();
-        console.log(extractQuery);
         const { recordset } = await query(extractQuery);
 
         return res.status(200).json({
