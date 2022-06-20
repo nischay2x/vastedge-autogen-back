@@ -5,16 +5,12 @@ const queryCrud = new DbQuery('AutogenCrud');
 
 async function insertColumn (req, res) {
     try {
-        let insertableData = req.body;
-        delete insertableData.dataLength;
-
-        const insertQuery = queryCrud.insert(insertableData).getQuery();
-        const { recordsets } = await query(insertQuery);
-
+        const insertQuery = queryCrud.insert(req.body).getQuery();
+        await query(insertQuery);
         return res.status(200).json({
             status: true,
             msg: "Data Inserted",
-            data: recordsets
+            data: req.body
         });
     } catch (error) {
         console.log(error);
@@ -57,14 +53,13 @@ async function editColumById (req, res) {
     try {
         const { id } = req.params;
         let editableData = req.body;
-        delete editableData.dataLength;
 
         const updateQuery = queryCrud.set(editableData).where('id', '=', id).getQuery();
-
-        const response = await query(updateQuery);
+        await query(updateQuery);
         return res.status(200).json({
             status: true,
-            msg: "Data Updated"
+            msg: "Data Updated",
+            data: editableData
         });
     } catch (error) {
         console.log(error);
@@ -76,7 +71,7 @@ async function deleteColumnById (req, res) {
     try {
         const { id } = req.params;
         const deleteQuery = queryCrud.delete().where('id', '=', id).getQuery();
-        const response = await query(deleteQuery);
+        await query(deleteQuery);
         return res.status(200).json({
             status: true,
             msg: "Data Deleted"
@@ -90,8 +85,8 @@ async function deleteColumnById (req, res) {
 async function getJoinedColumns (req, res) {
     try {
         const { tableName } = req.query;
-        let extractQuery = `SELECT ad.id AS designerId, ad.pageName, ad.tableName, ad.columnName, ad.applyFilter, ad.label, ad.fieldType,
-        ac.id AS crudId, ac.dataType, ac.nullConstrain
+        let extractQuery = `SELECT ad.id AS designerId, ad.pageName, ad.tableName, ad.columnName, ad.applyFilter, ad.label, ad.displayMode, ad.displayLength, ad.isMaster,
+        ac.id AS crudId, ac.dataType, ac.nullConstrain, ac.maxLength
         FROM AutogenDesigner AS ad RIGHT JOIN AutogenCrud AS ac ON (ad.columnName = ac.columnName AND ad.tableName = ac.tableName)`
         const tableConstrain = ` WHERE ad.tableName = '${tableName}'`;
 
@@ -108,6 +103,38 @@ async function getJoinedColumns (req, res) {
     }
 }
 
+async function getTablesByPageName(req, res) {
+    try {
+        const { pageName } = req.params;
+        const extractQuery = queryCrud.distinct(['tableName']).where('pageName', '=', pageName).getQuery();
+        const { recordset } = await query(extractQuery);
+
+        return res.status(200).json({
+            status: true,
+            data: recordset.map(r => r.tableName)
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error })
+    }
+}
+
+async function getDistictTables(req, res) {
+    try {
+        const extractQuery = queryCrud.distinct(['tableName']).getQuery();
+        const { recordset } = await query(extractQuery);
+        return res.status(200).json({
+            status: true,
+            data: recordset.map(r => r.tableName)
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error })
+    }
+}
+
 module.exports = {
-    insertColumn, getColumns, getColumnsByTableName, editColumById, deleteColumnById, getJoinedColumns
+    insertColumn, getColumns, getColumnsByTableName, editColumById, 
+    deleteColumnById, getJoinedColumns, getTablesByPageName,
+    getDistictTables
 }

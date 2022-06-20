@@ -8,7 +8,6 @@ const requiredStringWithoutWhitespace = Joi.string().required().regex(/^(_|\d|\w
 const stringWithoutWhitespace = Joi.string().regex(/^(_|\d|\w)+$/);
 const validInputFieldTypes = ['NUMBER', 'TEXT', 'EMAIL', 'PASSWORD', 'RADIO', 'CHECKBOX', 'DATE', 'TIME', 'DATETIME'];
 const autogenDesignerColumnNames = ['id', 'tableName', 'columnName', 'pageName', 'label', 'applyFilter', 'fieldType'];
-const validSqlDataTypes = ['STRING', 'NUMBER', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'FILE', 'IMAGE', 'DECIMAL', 'MONEY'];
 
 
 function verifyInsertColumnDetail (req, res, next) {
@@ -18,23 +17,12 @@ function verifyInsertColumnDetail (req, res, next) {
         columnName: requiredStringWithoutWhitespace,
         applyFilter: Joi.number().valid(1, 0).required().default(0),
         label: Joi.string().required().regex(/^(_|\d|\w|\s)+$/),
-        fieldType: Joi.string().valid(...validInputFieldTypes).default('TEXT'),
-        nullConstrain: Joi.number().valid(0, 1).default(0),
-        dataType: Joi.string().required().valid(...validSqlDataTypes).default('STRING'),
-        dataLength: Joi.number().min(1).default(20),
-        keepInForm: Joi.boolean().default(true)
+        displayMode: Joi.string().valid(...validInputFieldTypes).default('TEXT'),
+        displayLength: Joi.number().min(1),
+        isMaster: Joi.number().valid(0, 1)
     }).validate(req.body);
 
     if(error) return res.status(405).json(error);
-    value.dataType = getSQLDataType(value.dataType, value.dataLength);
-
-    const { 
-        pageName, tableName, columnName, applyFilter,
-        label, fieldType, nullConstrain, dataType 
-    } = value;
-
-    req.design = { pageName, tableName, columnName, applyFilter, label, fieldType };
-    req.crud = { tableName, dataType, nullConstrain, columnName }
 
     req.body = value;
     next();
@@ -63,12 +51,10 @@ function verifyEditColumnDetail (req, res, next) {
     });
 
     let { error, value } = Joi.object().keys({
-        pageName: stringWithoutWhitespace,
-        tableName: stringWithoutWhitespace,
-        columnName: stringWithoutWhitespace,
         applyFilter: Joi.number().valid(1, 0),
         label: Joi.string().regex(/^(_|\d|\w|\s)+$/),
-        fieldType: Joi.string().valid(...validInputFieldTypes)
+        displayMode: Joi.string().valid(...validInputFieldTypes),
+        displayLength: Joi.number().min(1),
     }).validate(req.body);
 
     if(error) return res.status(405).json(error);

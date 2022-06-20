@@ -6,7 +6,9 @@ class AutogenDesigner {
         this.pageName = obj.pageName;
         this.applyFilter = obj.applyFilter;
         this.label = obj.label;
-        this.fieldType = obj.fieldType
+        this.displayMode = obj.displayMode;
+        this.isMaster = obj.isMaster;
+        this.displayLength = obj.displayLength;
     }
 }
 module.exports = AutogenDesigner;
