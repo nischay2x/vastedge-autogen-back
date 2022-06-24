@@ -7,7 +7,7 @@ const queryCrud = new DbQuery('AutogenCrud');
 async function insertColumnDetail(req, res) {
     try {
 
-        const { tableName, columnName } = req.body;
+        const { tableName, columnName, pageName } = req.body;
         const checkCrudQuery = queryCrud.select([]).andWhere([['tableName', '=', tableName], ['columnName', '=', columnName]]);
         const cResponse = await query(checkCrudQuery);
         if(!cResponse.output) return res.status(405).json({
@@ -17,11 +17,20 @@ async function insertColumnDetail(req, res) {
 
         const insertDesignerQuery = queryDesigner.insert(req.body).getQuery();
         await query(insertDesignerQuery);
+        
+        const newestRowQuery = queryDesigner.select([]).andWhere([
+            ['tableName', '=', tableName], 
+            ['columnName', '=', columnName],
+            ['pageName', '=', pageName]
+        ]).getQuery();
+        console.log(newestRowQuery);
+        const { recordset } = await query(newestRowQuery);
+        console.log(recordset);
 
         return res.status(200).json({
             status: true,
             msg: "Data Inserted",
-            data: req.body
+            data: recordset[0]
         });
     } catch (error) {
         if (error.number === 2627) {
