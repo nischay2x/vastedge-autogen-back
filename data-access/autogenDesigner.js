@@ -53,7 +53,14 @@ async function getColumnDetails(req, res) {
 async function getColumnDetailsByTableName(req, res) {
     try {
         const { tableName } = req.params;
-        const extractQuery = queryDesigner.select([]).where('tableName', '=', tableName).getQuery();
+        const { pageName } = req.query;
+
+        let extractQuery = ''
+        if(pageName){
+            extractQuery = queryDesigner.select([]).andWhere([['tableName', '=', tableName], ['pageName', '=', pageName]]).getQuery();
+        } else {
+            extractQuery = queryDesigner.select([]).where('tableName', '=', tableName).getQuery();
+        }
         const { recordset } = await query(extractQuery);
 
         return res.status(200).json({
