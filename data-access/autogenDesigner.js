@@ -23,9 +23,7 @@ async function insertColumnDetail(req, res) {
             ['columnName', '=', columnName],
             ['pageName', '=', pageName]
         ]).getQuery();
-        console.log(newestRowQuery);
         const { recordset } = await query(newestRowQuery);
-        console.log(recordset);
 
         return res.status(200).json({
             status: true,

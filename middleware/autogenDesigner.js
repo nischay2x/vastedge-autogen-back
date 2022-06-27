@@ -19,7 +19,12 @@ function verifyInsertColumnDetail (req, res, next) {
         label: Joi.string().required().regex(/^(_|\d|\w|\s)+$/),
         displayMode: Joi.string().valid(...validInputFieldTypes).default('TEXT'),
         displayLength: Joi.number().min(1),
-        isMaster: Joi.number().valid(0, 1)
+        isMaster: Joi.number().valid(0, 1),
+        joinColumn: Joi.alternatives().conditional('isMaster', {
+            is: 0,
+            then: requiredStringWithoutWhitespace,
+            otherwise: Joi.string().valid('')
+        })
     }).validate(req.body);
 
     if(error) return res.status(405).json(error);
@@ -54,7 +59,7 @@ function verifyEditColumnDetail (req, res, next) {
         applyFilter: Joi.number().valid(1, 0),
         label: Joi.string().regex(/^(_|\d|\w|\s)+$/),
         displayMode: Joi.string().valid(...validInputFieldTypes),
-        displayLength: Joi.number().min(1),
+        displayLength: Joi.number().min(1)
     }).validate(req.body);
 
     if(error) return res.status(405).json(error);

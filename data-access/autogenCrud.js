@@ -5,12 +5,20 @@ const queryCrud = new DbQuery('AutogenCrud');
 
 async function insertColumn (req, res) {
     try {
+        const { tableName, columnName } = req.body;
         const insertQuery = queryCrud.insert(req.body).getQuery();
         await query(insertQuery);
+
+        const newestRowQuery = queryCrud.select([]).andWhere([
+            ['tableName', '=', tableName], 
+            ['columnName', '=', columnName]
+        ]).getQuery();
+        const { recordset } = await query(newestRowQuery);
+
         return res.status(200).json({
             status: true,
             msg: "Data Inserted",
-            data: req.body
+            data: recordset[0]
         });
     } catch (error) {
         console.log(error);
