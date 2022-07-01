@@ -15,20 +15,32 @@ function verifyInsertColumnDetail (req, res, next) {
         pageName: requiredStringWithoutWhitespace,
         tableName: requiredStringWithoutWhitespace,
         columnName: requiredStringWithoutWhitespace,
-        applyFilter: Joi.number().valid(1, 0).required().default(0),
+        applyFilter: Joi.number().valid(1, 0).default(0),
         label: Joi.string().required().regex(/^(_|\d|\w|\s)+$/),
-        displayMode: Joi.string().valid(...validInputFieldTypes).default('TEXT'),
+        displayMode: Joi.string().valid(...validInputFieldTypes).default('VARCHAR'),
         displayLength: Joi.number().min(1),
         isMaster: Joi.number().valid(0, 1),
-        joinColumn: Joi.alternatives().conditional('isMaster', {
+        isJoinColumn: Joi.alternatives().conditional('isMaster', {
             is: 0,
+            then: Joi.number().valid(0, 1),
+            otherwise: Joi.number().valid(0)
+        }),
+        refTable: Joi.alternatives().conditional('isJoinColumn', {
+            is: 1,
             then: requiredStringWithoutWhitespace,
-            otherwise: Joi.string().valid('')
+            otherwise: Joi.string().valid("")
+        }),
+        refColumn: Joi.alternatives().conditional('isJoinColumn', {
+            is: 1,
+            then: requiredStringWithoutWhitespace,
+            otherwise: Joi.string().valid("")
         })
     }).validate(req.body);
 
-    if(error) return res.status(405).json(error);
-
+    if(error) return res.status(405).json({
+        type: 'VALIDATION ERROR', 
+        error: error.message
+    });
     req.body = value;
     next();
 }
@@ -44,7 +56,10 @@ function verifyGetColumnDetails (req, res, next) {
         sortBy: Joi.string().valid(...autogenDesignerColumnNames)
     }).validate(req.query);
     
-    if(error) return res.status(405).json(error);
+    if(error) return res.status(405).json({
+        type: 'VALIDATION ERROR', 
+        error: error.message
+    });
 
     req.query = value;
     next();
@@ -56,13 +71,28 @@ function verifyEditColumnDetail (req, res, next) {
     });
 
     let { error, value } = Joi.object().keys({
+        columnName: stringWithoutWhitespace,
         applyFilter: Joi.number().valid(1, 0),
         label: Joi.string().regex(/^(_|\d|\w|\s)+$/),
         displayMode: Joi.string().valid(...validInputFieldTypes),
-        displayLength: Joi.number().min(1)
+        displayLength: Joi.number().min(1),
+        isJoinColumn: Joi.number().valid(0, 1),
+        refTable: Joi.alternatives().conditional('isJoinColumn', {
+            is: 1,
+            then: requiredStringWithoutWhitespace,
+            otherwise: Joi.string().valid("")
+        }),
+        refColumn: Joi.alternatives().conditional('isJoinColumn', {
+            is: 1,
+            then: requiredStringWithoutWhitespace,
+            otherwise: Joi.string().valid("")
+        })
     }).validate(req.body);
 
-    if(error) return res.status(405).json(error);
+    if(error) return res.status(405).json({
+        type: 'VALIDATION ERROR', 
+        error: error.message
+    });
 
     req.body = value;
     next();
@@ -70,6 +100,7 @@ function verifyEditColumnDetail (req, res, next) {
 
 function verifyDeleteColumnDetail (req, res, next) {
     if(!req.params.id) return res.status(405).json({
+        type: "VALIDATION ERROR",
         error: "Id is required"
     });
     next();
@@ -80,7 +111,10 @@ function verifyGetTablesByPageName (req, res, next) {
         pageName: requiredStringWithoutWhitespace
     }).validate(req.params);
 
-    if(error) return res.status(405).json(error);
+    if(error) return res.status(405).json({
+        type: 'VALIDATION ERROR', 
+        error: error.message
+    });
     req.params = value;
     next();
 }
@@ -90,7 +124,10 @@ function verifyGetColumnDetailsByTableName (req, res, next) {
         tableName: requiredStringWithoutWhitespace
     }).validate(req.params);
 
-    if(error) return res.status(405).json(error);
+    if(error) return res.status(405).json({
+        type: 'VALIDATION ERROR', 
+        error: error.message
+    });
     req.params = value;
     next();
 }

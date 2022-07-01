@@ -5,14 +5,14 @@ const cors = require('cors');
 
 
 const designerRoute = require("./routes/autogenDesigner.js");
-const crudRoute = require("./routes/autogenCrud.js");
+const datasetRoute = require("./routes/autogenDataset.js");
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use("/designer", designerRoute);
-app.use("/crud", crudRoute);
+app.use("/dataset", datasetRoute);
 
 app.listen(5000, (err) => {
     if (err) console.log(err);

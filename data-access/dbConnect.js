@@ -27,6 +27,16 @@ class DbQuery {
         return this;
     }
 
+    insertWithOutput(data, outputField) {
+        let keyArray = [];
+        let valuesArray = []; 
+        Object.keys(data).forEach(k => {
+            keyArray.push(k); valuesArray.push(`'${data[k]}'`)
+        });
+        this.query = `INSERT INTO ${this.tableName} (${keyArray.join(", ")}) OUTPUT INSERTED.${outputField} VALUES (${valuesArray.join(", ")})`;
+        return this;
+    }
+
     select (fields) {
         let f = '';
         if(fields?.length) f = fields.join(", ");

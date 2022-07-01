@@ -5,7 +5,8 @@ class AutogenCrud {
         this.columnName = obj.columnName;
         this.dataType = obj.dataType;
         this.maxLength = obj.maxLength;
-        this.nullConstrain = obj.nullConstrain;
+        this.allowNull = obj.allowNull;
+        this.keepUnique = obj.keepUnique
     }
 }
 

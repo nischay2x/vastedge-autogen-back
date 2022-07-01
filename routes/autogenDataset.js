@@ -4,15 +4,16 @@ const router = express.Router();
 const { 
     verifyInsertColumn, verifyGetColumns,
     verifyEditColumn, verifyDeleteColumn,
-    verifyGetTablesByPageName
-} = require("../middleware/autogenCrud.js");
+    verifyGetTablesByPageName,
+    verifyTableNameInParams
+} = require("../middleware/autogenDataset.js");
 
 const {
     insertColumn, editColumById, 
     getColumns, deleteColumnById,
     getJoinedColumns, getColumnsByTableName,
-    getTablesByPageName, getDistictTables
-} = require("../data-access/autogenCrud.js");
+    getTablesByPageName, getDistictTables, getJoinableColumnsByTableName
+} = require("../data-access/autogenDataset.js");
 
 // router.post("/column", verifyInsertColumn, insertColumn);
 router.get("/columns/combined", getJoinedColumns);
@@ -21,6 +22,7 @@ router.post("/column", verifyInsertColumn, insertColumn);
 router.patch("/column/:id", verifyEditColumn, editColumById);
 router.delete("/column/:id", verifyDeleteColumn, deleteColumnById);
 router.get("/columns/:tableName", getColumnsByTableName);
+router.get("/joinable/columns/:tableName", verifyTableNameInParams, getJoinableColumnsByTableName);
 
 router.get("/tables/:pageName", verifyGetTablesByPageName, getTablesByPageName);
 router.get("/tables", getDistictTables);

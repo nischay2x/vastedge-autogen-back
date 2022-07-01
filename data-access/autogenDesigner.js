@@ -1,14 +1,14 @@
 const dbConnect = require("./dbConnect.js");
 const DbQuery = dbConnect.DbQuery;
 const query = dbConnect.query;
-const queryDesigner = new DbQuery('AutogenDesigner');
-const queryCrud = new DbQuery('AutogenCrud');
+const queryDesigner = new DbQuery('Designer');
+const queryDataset = new DbQuery('Dataset');
 
 async function insertColumnDetail(req, res) {
     try {
 
         const { tableName, columnName, pageName } = req.body;
-        const checkCrudQuery = queryCrud.select([]).andWhere([['tableName', '=', tableName], ['columnName', '=', columnName]]);
+        const checkCrudQuery = queryDataset.select([]).andWhere([['tableName', '=', tableName], ['columnName', '=', columnName]]);
         const cResponse = await query(checkCrudQuery);
         if(!cResponse.output) return res.status(405).json({
             status: false,
@@ -34,11 +34,15 @@ async function insertColumnDetail(req, res) {
         if (error.number === 2627) {
             return res.status(500).json({
                 status: false,
-                msg: "Duplicate Column Name for same Table"
+                type: "SQL Error",
+                error: "Duplicate ,Column Name for same Table"
             })
         }
         console.log(error);
-        return res.status(500).json(error);
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -53,7 +57,10 @@ async function getColumnDetails(req, res) {
         });
     } catch (error) {
         console.log(error.message);
-        return res.status(500).json({ error })
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -76,7 +83,10 @@ async function getColumnDetailsByTableName(req, res) {
         });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error })
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -90,7 +100,10 @@ async function getDistinctPages(req, res) {
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error })
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -106,7 +119,10 @@ async function getTablesByPageName(req, res) {
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error })
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -120,7 +136,10 @@ async function getDistinctTables(req, res) {
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error })
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -131,11 +150,15 @@ async function editColumDetailById(req, res) {
         await query(updateQuery);
         return res.status(200).json({
             status: true,
-            msg: "Data Updated"
+            msg: "Data Updated",
+            data: req.body
         });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error })
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
@@ -150,7 +173,10 @@ async function deleteColumnDetailById(req, res) {
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error });
+        return res.status(500).json({
+            type: 'SQL Error',
+            error: error.message
+        });
     }
 }
 
