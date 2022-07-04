@@ -53,7 +53,8 @@ function verifyGetColumnDetails (req, res, next) {
         limit: Joi.number(),
         offset: Joi.number(),
         fields: Joi.array().items(Joi.string().valid(...autogenDesignerColumnNames)),
-        sortBy: Joi.string().valid(...autogenDesignerColumnNames)
+        sortBy: Joi.string().valid(...autogenDesignerColumnNames),
+        pageName: stringWithoutWhitespace
     }).validate(req.query);
     
     if(error) return res.status(405).json({

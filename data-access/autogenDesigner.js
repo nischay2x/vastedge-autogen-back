@@ -48,15 +48,22 @@ async function insertColumnDetail(req, res) {
 
 async function getColumnDetails(req, res) {
     try {
-        const { limit = 10, offset = 0, fields = [], sortBy = 'id' } = req.query;
-        const extractQuery = queryDesigner.select(fields).sort(sortBy).offset(offset).limit(limit).getQuery();
+        const { limit = 10, offset = 0, fields = [], sortBy = 'id', pageName } = req.query;
+        let extractQuery = '';
+        if(pageName) {
+            extractQuery = queryDesigner.select(fields).where('pageName', '=', pageName)
+            .sort(sortBy).offset(offset).limit(limit).getQuery();
+        } else {
+            extractQuery = queryDesigner.select(fields)
+            .sort(sortBy).offset(offset).limit(limit).getQuery();
+        }
         const { recordset } = await query(extractQuery);
         return res.status(200).json({
             status: true,
             data: recordset
         });
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         return res.status(500).json({
             type: 'SQL Error',
             error: error.message
